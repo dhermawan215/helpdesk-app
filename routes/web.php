@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthenticatedController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::middleware('guest')->group(function () {
+    Route::get('login', [AuthenticatedController::class, 'login'])->name('login');
+});
 Route::get('/', function () {
-    return view('welcome');
+    $title = 'Dashboard';
+    return view('dashboard', ['title' => $title]);
+});
+// admin route
+Route::prefix('admin')->middleware('auth')->group(function () {
 });
