@@ -16,11 +16,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedController::class, 'login'])->name('login');
+    Route::post('login', [AuthenticatedController::class, 'authenticated']);
 });
 Route::get('/', function () {
     $title = 'Dashboard';
     return view('dashboard', ['title' => $title]);
-});
+})->middleware('auth');
 // admin route
 Route::prefix('admin')->middleware('auth')->group(function () {
 });

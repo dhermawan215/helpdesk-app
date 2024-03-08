@@ -38,11 +38,11 @@
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
 
-                {{-- @php
+                @php
                     $menu = SysMenu::menuActivePermission();
                     $currentRouteName = Route::currentRouteName();
                     $prefixRoute = explode('.', $currentRouteName);
-                @endphp --}}
+                @endphp
                 <li class="nav-item ">
                     <a href="/" class="nav-link {{ request()->is('/') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -52,7 +52,7 @@
                     </a>
                 </li>
 
-                {{-- @foreach ($menu as $value)
+                @foreach ($menu as $value)
                     @php
                         $isActive = '';
                     @endphp
@@ -69,7 +69,7 @@
                             </p>
                         </a>
                     </li>
-                @endforeach --}}
+                @endforeach
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

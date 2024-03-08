@@ -17,7 +17,7 @@ class SysMenu extends Facade
         $menu = DB::table('sys_user_module_roles AS a')
             ->select('a.*', 'b.name')
             ->join('sys_module_menus AS b', 'a.sys_module_id', '=', 'b.id')
-            ->where('a.sys_user_group_id', '1')
+            ->where('a.sys_user_group_id', $auth->id)
             // ->where('a.sys_user_group_id', $auth->sys_group_id)
             ->where('b.name', $sysMenuName)
             ->first();
@@ -39,9 +39,9 @@ class SysMenu extends Facade
         $menu = DB::table('sys_user_module_roles AS a')
             ->select('a.*', 'b.*')
             ->join('sys_module_menus AS b', 'a.sys_module_id', '=', 'b.id')
-            ->where('a.sys_user_group_id', '1')
+            ->where('a.sys_user_group_id', $auth->id)
             // ->where('a.sys_user_group_id', $auth->sys_group_id)
-            ->where('is_akses', '1')
+            ->where('is_access', '1')
             ->orderBy('order_menu', 'ASC')
             ->get();
 

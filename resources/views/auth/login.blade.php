@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ asset('theme/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('theme/dist/css/adminlte.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('theme/plugins/toastr/toastr.min.css') }}">
 </head>
 
 <body class="hold-transition login-page">
@@ -25,9 +26,10 @@
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
-                <form action="javascript:;" method="post">
+                <form action="javascript:;" method="post" id="login-form">
+                    @csrf
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email">
+                        <input type="email" class="form-control" name="email" placeholder="Email">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
@@ -35,7 +37,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password">
+                        <input type="password" class="form-control" name="password" placeholder="Password">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -54,7 +56,7 @@
                 <div class="social-auth-links text-center mb-3">
                     <p>- OR -</p>
                     <a href="#" class="btn btn-block btn-danger">
-                        <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
+                        <i class="fab fa-google-plus mr-2"></i> Sign in using Google
                     </a>
                 </div>
                 <!-- /.social-auth-links -->
@@ -67,13 +69,18 @@
         </div>
     </div>
     <!-- /.login-box -->
-
+    <script>
+        var url = '{{ url('') }}';
+    </script>
     <!-- jQuery -->
     <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->
     <script src="{{ asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('theme/dist/js/adminlte.min.js') }}"></script>
+
+    <script src="{{ asset('theme/plugins/toastr/toastr.min.js') }}"></script>
+    <script src="{{ asset('dist/js/auth/login.min.js?t=') . time() }}"></script>
 </body>
 
 </html>

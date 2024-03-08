@@ -1,7 +1,6 @@
  <!-- home url-->
  <script>
-     const url = '{{ url('
-     ') }}';
+     var url = '{{ url('') }}';
  </script>
  <!-- jQuery -->
  <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script>
