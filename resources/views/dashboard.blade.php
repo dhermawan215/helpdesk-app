@@ -626,3 +626,26 @@
     </section>
     <!-- /.content -->
 @endsection
+@push('js-custom')
+    <!-- overlayScrollbars -->
+    <script src="{{ asset('theme/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+
+    <!-- overlayScrollbars -->
+    <script src="{{ asset('theme/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+    <!-- ChartJS -->
+    <script src="{{ asset('theme/plugins/chart.js/Chart.min.js') }}"></script>
+    <!-- Sparkline -->
+    <script src="{{ asset('theme/plugins/sparklines/sparkline.js') }}"></script>
+    <!-- JQVMap -->
+    <script src="{{ asset('theme/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
+    <script src="{{ asset('theme/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
+    <!-- jQuery Knob Chart -->
+    <script src="{{ asset('theme/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
+    <!-- daterangepicker -->
+    <script src="{{ asset('theme/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('theme/plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="{{ asset('theme/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <!-- Summernote -->
+    <script src="{{ asset('theme/plugins/summernote/summernote-bs4.min.js') }}"></script>
+@endpush
