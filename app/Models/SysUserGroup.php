@@ -12,4 +12,9 @@ class SysUserGroup extends Model
     protected $table = 'sys_user_groups';
 
     protected $fillable = ['name', 'created_by'];
+
+    public function userRoles()
+    {
+        return $this->hasMany(User::class, 'roles', 'id');
+    }
 }

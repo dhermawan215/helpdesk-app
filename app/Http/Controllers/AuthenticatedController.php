@@ -38,7 +38,7 @@ class AuthenticatedController extends Controller
             }
 
             $request->session()->regenerate();
-            $url = \url('/');
+            $url = \url('/dashboard');
 
             $data['status'] = 'true';
             $userLogLogin = UserLogController::recordLog($data);
@@ -51,5 +51,27 @@ class AuthenticatedController extends Controller
         $userLogIfFails = UserLogController::recordLog($data);
 
         return \response()->json(['data' => 'Please check your email, password and try again!'], 401);
+    }
+
+    public function logout(Request $request)
+    {
+        $data = [
+            'email' => $request->email,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->header('user-agent'),
+            'activity' => 'logout from system',
+            'status' => 'true'
+        ];
+        $userLogLogOut = UserLogController::recordLog($data);
+
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        $url = \url('/login');
+
+        return \response()->json(['success' => \true, 'data' => $url], 200);
     }
 }

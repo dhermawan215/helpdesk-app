@@ -88,7 +88,10 @@ class UserGroupController extends Controller
 
         return \response()->json(['success' => true, 'message' => 'Data saved!'], 200);
     }
-
+    /** 
+     * @method for update data
+     * @return json
+     */
     public function update(Request $request, $id)
     {
         $userGroup = SysUserGroup::find(\base64_decode($id));
@@ -103,10 +106,49 @@ class UserGroupController extends Controller
         $userGroup->update(['name' => $request->name]);
         return \response()->json(['success' => true, 'message' => 'Data updated!'], 200);
     }
-
+    /** 
+     * @method for delete data
+     * @return json
+     */
     public function delete(Request $request)
     {
         $userGroup = SysUserGroup::whereIn('id', $request->ids)->delete();
         return \response()->json(['success' => true, 'message' => 'Data deleted!'], 200);
+    }
+    /** 
+     * @method for select 2 dropdown user group(regiester user)
+     * @return json
+     */
+    public function listUserGroup(Request $request)
+    {
+        $data = [];
+        $arr = [];
+        $search = $request['search'];
+        $perPage = $request['page'];
+        $limit = 10;
+        $resultCount = 10;
+        $offset = ($perPage - 1) * $resultCount;
+
+        $query = SysUserGroup::select('id', 'name');
+
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        $totalCount = $query->count();
+        $resData = $query->skip($offset)
+            ->take($limit)
+            ->get();
+
+        foreach ($resData as $key => $value) {
+            $data['id'] = $value->id;
+            $data['text'] = $value->name;
+            $arr[] = $data;
+        }
+
+        return \response()->json([
+            'total_count' => $totalCount,
+            'items' => $arr
+        ]);
     }
 }

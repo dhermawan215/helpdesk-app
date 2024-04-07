@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'roles',
+        'is_active'
     ];
 
     /**
@@ -42,4 +44,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function userRole()
+    {
+        return $this->belongsTo(SysUserGroup::class, 'roles', 'id');
+    }
 }
