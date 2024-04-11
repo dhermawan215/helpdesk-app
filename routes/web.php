@@ -48,4 +48,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/user-management/add', [UserManagementController::class, 'add'])->name('user_management.add');
     Route::post('/user-management/register', [UserManagementController::class, 'registerUser']);
     Route::post('/user-management/active-user', [UserManagementController::class, 'activeUser']);
+    Route::get('/user-management/change-password/{email}', [UserManagementController::class, 'changePassword'])->name('user_management.change_password');
+    Route::post('/user-management/change-password', [UserManagementController::class, 'updatePassword']);
+    Route::get('/user-management/edit/{email}', [UserManagementController::class, 'edit'])->name('user_management.edit');
+    Route::post('/user-management/user-edit', [UserManagementController::class, 'userEdit']);
+    Route::post('/user-management/user-update', [UserManagementController::class, 'userUpdate']);
 });
