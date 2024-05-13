@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticatedController;
+use App\Http\Controllers\ModulePermissionController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
@@ -53,4 +54,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/user-management/edit/{email}', [UserManagementController::class, 'edit'])->name('user_management.edit');
     Route::post('/user-management/user-edit', [UserManagementController::class, 'userEdit']);
     Route::post('/user-management/user-update', [UserManagementController::class, 'userUpdate']);
+    // Route module and permission 
+    Route::get('/module-permission', [ModulePermissionController::class, 'index'])->name('module_permission');
+    Route::post('/module-permission/list', [ModulePermissionController::class, 'list']);
+    Route::get('/module-permission/add', [ModulePermissionController::class, 'add'])->name('module_permission.add');
+    Route::post('/module-permission/module-create', [ModulePermissionController::class, 'save']);
+    Route::get('/module-permission/module-role/{id}', [ModulePermissionController::class, 'moduleRole'])->name('module_permission.module_roles');
+    Route::post('/module-permission/module-role/save', [ModulePermissionController::class, 'storeModuleRole']);
+    Route::post('/module-permission/module-detail', [ModulePermissionController::class, 'moduleDetail']);
 });

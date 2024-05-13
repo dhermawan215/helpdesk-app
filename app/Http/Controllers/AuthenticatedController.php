@@ -11,7 +11,7 @@ class AuthenticatedController extends Controller
 {
     public function login()
     {
-        return \view('auth.login');
+        return view('auth.login');
     }
 
     public function authenticated(Request $request)
@@ -56,7 +56,7 @@ class AuthenticatedController extends Controller
     public function logout(Request $request)
     {
         $data = [
-            'email' => $request->email,
+            'email' => Auth::user()->email,
             'ip_address' => $request->ip(),
             'user_agent' => $request->header('user-agent'),
             'activity' => 'logout from system',
