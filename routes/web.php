@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticatedController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\ModulePermissionController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserManagementController;
@@ -62,4 +63,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/module-permission/module-role/{id}', [ModulePermissionController::class, 'moduleRole'])->name('module_permission.module_roles');
     Route::post('/module-permission/module-role/save', [ModulePermissionController::class, 'storeModuleRole']);
     Route::post('/module-permission/module-detail', [ModulePermissionController::class, 'moduleDetail']);
+});
+//Route non admin
+Route::middleware('auth')->group(function () {
+    //Department route
+    Route::get('/department', [DepartmentController::class, 'index'])->name('department');
 });
