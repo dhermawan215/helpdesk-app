@@ -34,12 +34,13 @@ var Index = (function () {
     var handleSubmitModuleRole = function () {
         $(".form-module-role").submit(function (e) {
             e.preventDefault();
+
             const form = $(this);
             let formData = new FormData(form[0]);
 
             if (confirm("is right?")) {
                 $.ajax({
-                    url: url + "/permission-management/module-role/save",
+                    url: url + "/admin/module-permission/module-role/save",
                     type: "POST",
                     data: formData,
                     processData: false,

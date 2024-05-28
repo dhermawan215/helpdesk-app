@@ -133,7 +133,7 @@ class ModulePermissionController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'is_access' => 'required',
-            'function' => 'required'
+            'function' => 'nullable'
         ]);
 
         if ($validator->fails()) {
@@ -153,7 +153,7 @@ class ModulePermissionController extends Controller
             'function' => $requestAll['function']
         ]);
 
-        return \response()->json(['success' => \true, 'message' => 'success to create permission']);
+        return \response()->json(['success' => \true, 'message' => 'success to create permission', 'url' => self::$url]);
     }
     /**
      * @method to handle request when admin klik detail module menu and before admin create or update it,

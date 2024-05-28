@@ -104,8 +104,8 @@
                                             </div>
                                             <div class="form-group row">
                                                 <button type="submit" class="btn btn-primary">Submit</button>
-                                                <button type="button"
-                                                    class="btn btn-outline-secondary btn-back ml-1">Back</button>
+                                                <a href="{{ route('module_permission') }}"
+                                                    class="btn btn-outline-secondary btn-back ml-1">Back</a>
                                             </div>
                                         </form>
                                     </div>
