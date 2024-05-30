@@ -59,7 +59,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/module-permission', [ModulePermissionController::class, 'index'])->name('module_permission');
     Route::post('/module-permission/list', [ModulePermissionController::class, 'list']);
     Route::get('/module-permission/add', [ModulePermissionController::class, 'add'])->name('module_permission.add');
+    Route::get('/module-permission/edit/{id}', [ModulePermissionController::class, 'edit'])->name('module_permission.edit');
     Route::post('/module-permission/module-create', [ModulePermissionController::class, 'save']);
+    Route::patch('/module-permission/module-update/{id}', [ModulePermissionController::class, 'update']);
     Route::get('/module-permission/module-role/{id}', [ModulePermissionController::class, 'moduleRole'])->name('module_permission.module_roles');
     Route::post('/module-permission/module-role/save', [ModulePermissionController::class, 'storeModuleRole']);
     Route::post('/module-permission/module-detail', [ModulePermissionController::class, 'moduleDetail']);

@@ -59,7 +59,8 @@ class ModulePermissionController extends Controller
             $data['name'] = $value->name;
             $data['route'] = $value->route_name;
             $data['link'] = $value->link_path;
-            $data['action'] = '<a href="' . \route('module_permission.module_roles', \base64_encode($value->id)) . '" class="btn btn-sm btn-success" title="Set Module Role"><i class="fa fa-cogs" aria-hidden="true"></i></a>';
+            $data['action'] = '<a href="' . \route('module_permission.module_roles', \base64_encode($value->id)) . '" class="btn btn-sm btn-success" title="Set Module Role"><i class="fa fa-cogs" aria-hidden="true"></i></a>
+            <a href="' . \route('module_permission.edit', \base64_encode($value->id)) . '" class="btn btn-sm btn-primary" title="Edit Module Role"><i class="fa fa-edit" aria-hidden="true"></i></a>';
             $arr[] = $data;
             $i++;
         }
@@ -110,6 +111,53 @@ class ModulePermissionController extends Controller
         ]);
 
         return \response()->json(['success' => true, 'message' => 'Data saved!'], 200);
+    }
+    /**
+     * @method for handle view edit module
+     * @return view
+     */
+    public function edit($id)
+    {
+        $data = SysModuleMenu::find(base64_decode($id));
+        return \view('admin.module-permission.edit', [
+            'title' => self::title . ' - Edit Module',
+            'value' => $data,
+            'url' => static::$url
+        ]);
+    }
+    /**
+     * @method for handle view update module
+     * @return json
+     */
+    public function update(Request $request, $id)
+    {
+        $auth = Auth::user();
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'route_name' => 'required',
+            'link_path' => 'required',
+            'description' => 'required',
+            'icon' => 'required',
+            'order_menu' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return \response()->json($validator->errors(), 403);
+        }
+
+        $moduleData = SysModuleMenu::find(base64_decode($id));
+
+        $moduleData->update([
+            'name' => $request->name,
+            'route_name' => $request->route_name,
+            'link_path' => $request->link_path,
+            'description' => $request->description,
+            'icon' => $request->icon,
+            'created_by' => $auth->name,
+            'order_menu' => $request->order_menu,
+        ]);
+
+        return \response()->json(['success' => true, 'message' => 'Update success', 'url' => static::$url], 200);
     }
     /**
      * @method to handle module permission for user when access system
