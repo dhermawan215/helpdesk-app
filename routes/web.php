@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticatedController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\HelpDeskCategoryController;
 use App\Http\Controllers\ModulePermissionController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserManagementController;
@@ -68,4 +69,11 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     //Department route
     Route::get('/department', [DepartmentController::class, 'index'])->name('department');
+
+    //Help desk category
+    Route::get('/help-desk-category', [HelpDeskCategoryController::class, 'index'])->name('help_desk_category');
+    Route::post('/help-desk-category/list', [HelpDeskCategoryController::class, 'list']);
+    Route::post('/help-desk-category/save', [HelpDeskCategoryController::class, 'store']);
+    Route::patch('/help-desk-category/update/{id}', [HelpDeskCategoryController::class, 'update']);
+    Route::post('/help-desk-category/delete', [HelpDeskCategoryController::class, 'destroy']);
 });
