@@ -106,10 +106,10 @@ var Index = (function () {
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "POST",
-                        url: url + "/admin/user-group/delete",
+                        url: url + "/admin/module-permission/delete",
                         data: {
                             _token: csrf_token,
-                            ids: aSelected,
+                            mValue: aSelected,
                         },
                         success: function (response) {
                             if (response.success == true) {
@@ -138,7 +138,6 @@ var Index = (function () {
         init: function () {
             handleData();
             handleDelete();
-            handleSubmit();
         },
     };
 })();
