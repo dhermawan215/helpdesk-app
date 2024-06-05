@@ -60,7 +60,8 @@ class ModulePermissionController extends Controller
             $data['route'] = $value->route_name;
             $data['link'] = $value->link_path;
             $data['action'] = '<a href="' . \route('module_permission.module_roles', \base64_encode($value->id)) . '" class="btn btn-sm btn-success" title="Set Module Role"><i class="fa fa-cogs" aria-hidden="true"></i></a>
-            <a href="' . \route('module_permission.edit', \base64_encode($value->id)) . '" class="btn btn-sm btn-primary" title="Edit Module Role"><i class="fa fa-edit" aria-hidden="true"></i></a>';
+            <a href="' . \route('module_permission.edit', \base64_encode($value->id)) . '" class="btn btn-sm btn-primary" title="Edit Module Role"><i class="fa fa-edit" aria-hidden="true"></i></a>
+            <a href="' . \route('module_permission.module_roles_show', \base64_encode($value->id)) . '" class="btn btn-sm btn-outline-primary" title="Show Module Role&Permission"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
             $arr[] = $data;
             $i++;
         }
@@ -126,7 +127,7 @@ class ModulePermissionController extends Controller
         ]);
     }
     /**
-     * @method for handle view update module
+     * @method for handle update module
      * @return json
      */
     public function update(Request $request, $id)
@@ -173,7 +174,6 @@ class ModulePermissionController extends Controller
             'menu' => $moduleData
         ]);
     }
-
     /**
      * @method to handle save request add module permission
      */
@@ -204,7 +204,21 @@ class ModulePermissionController extends Controller
         return \response()->json(['success' => \true, 'message' => 'success to create permission', 'url' => self::$url]);
     }
     /**
-     * @method to handle request when admin klik detail module menu and before admin create or update it,
+     * @method to handle show detail module and permission
+     * @return view
+     */
+    public function moduleRoleShow($id)
+    {
+        $moduleData = SysModuleMenu::select('id', 'description')->where('id', \base64_decode($id))->first();
+        $userGroupData = SysUserGroup::select('id', 'name')->get();
+        return \view('admin.module-permission.module-role-show', [
+            'title' => self::title . ' - Module Role',
+            'userGroup' => $userGroupData,
+            'menu' => $moduleData
+        ]);
+    }
+    /**
+     * @method to handle request when admin click detail module menu and before admin create or update it,
      * @return json
      */
     public function moduleDetail(Request $request)
@@ -214,6 +228,10 @@ class ModulePermissionController extends Controller
 
         $permissionData = SysUserModuleRole::where('sys_module_id', $moduleValue)
             ->where('sys_user_group_id', $userGroupValue)->first();
+
+        if (is_null($permissionData)) {
+            return response()->json(['success' => false, 'value' => null, 'message' => 'empty data, please add in menu set module role'], 403);
+        }
 
         $data = [];
         if ($permissionData->is_access != 0) {
@@ -229,5 +247,56 @@ class ModulePermissionController extends Controller
             'text' => $text,
             'function' => implode(',', $functionDataFromDb)
         ];
+
+        return response()->json(['success' => true, 'value' => $data, 'message' => 'success'], 200);
+    }
+    /**
+     * @method to handle update data module roles permission
+     * @return json
+     */
+    public function updateModuleRole(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'is_access' => 'required',
+            'function' => 'nullable'
+        ]);
+
+        if ($validator->fails()) {
+            return \response()->json($validator->errors(), 403);
+        }
+
+        $dataModulePermission = SysUserModuleRole::find(base64_decode($request->formValue));
+
+        $requestAll = [];
+        $requestAll = $request->all();
+        // convert function value (string to array), return array
+        $functionInArray = \explode(',', $request->function);
+        // convert to json 
+        $requestAll['function'] = \json_encode($functionInArray);
+        //update data
+        $dataModulePermission->update([
+            'sys_module_id' => base64_decode($requestAll['moduleValue']),
+            'sys_user_group_id' => $requestAll['groupValue'],
+            'is_access' => $requestAll['is_access'],
+            'function' => $requestAll['function']
+        ]);
+
+        return response()->json(['success' => true,  'message' => 'Update success', 'url' => static::$url], 200);
+    }
+    /**
+     * handle delete module permission data then delete sys user module roles data
+     * @return json
+     */
+    public function delete(Request $request)
+    {
+        //delete module menu data
+        $moduleMenu = SysModuleMenu::whereIn('id', $request->mValue);
+        $moduleDelete = $moduleMenu->delete();
+
+        if ($moduleDelete) {
+            $userModuleRole = SysUserModuleRole::whereIn('sys_module_id', $request->mValue)->delete();
+        }
+
+        return response()->json(['success' => true,  'message' => 'Delete success'], 200);
     }
 }
