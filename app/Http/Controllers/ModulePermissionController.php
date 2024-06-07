@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SysModuleMenu;
+use App\Helper\SysMenu;
 use App\Models\SysUserGroup;
-use App\Models\SysUserModuleRole;
 use Illuminate\Http\Request;
+use App\Models\SysModuleMenu;
+use App\Models\SysUserModuleRole;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,8 +21,18 @@ class ModulePermissionController extends Controller
         self::$url = \route('module_permission');
     }
 
+    private function modulePermission()
+    {
+        return SysMenu::menuSetingPermission(static::sysModuleName);
+    }
+
     public function index()
     {
+        $modulePermission = $this->modulePermission();
+        if (!isset($modulePermission->is_access)) {
+            return \abort('403');
+        }
+        $moduleFn = \json_decode($modulePermission->function, true);
         return \view('admin.module-permission.index', ['title' => static::title]);
     }
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\SysMenu;
 use App\Models\SysUserGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,8 +19,18 @@ class UserGroupController extends Controller
         self::$url = \route('user_group');
     }
 
+    private function modulePermission()
+    {
+        return SysMenu::menuSetingPermission(static::sysModuleName);
+    }
+
     public function index()
     {
+        $modulePermission = $this->modulePermission();
+        if (!isset($modulePermission->is_access)) {
+            return \abort('403');
+        }
+        $moduleFn = \json_decode($modulePermission->function, true);
         return \view('admin.user-group.index', ['title' => self::title]);
     }
     /** 

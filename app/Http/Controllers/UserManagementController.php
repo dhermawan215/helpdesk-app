@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Helper\SysMenu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -13,9 +14,19 @@ class UserManagementController extends Controller
     protected const title = 'User Management';
     public static $url;
 
+    private function modulePermission()
+    {
+        return SysMenu::menuSetingPermission(static::sysModuleName);
+    }
+
     public function index()
     {
-        return \view('admin.user-management.index', ['title' => static::title]);
+        $modulePermission = $this->modulePermission();
+        if (!isset($modulePermission->is_access)) {
+            return \abort('403');
+        }
+        $moduleFn = \json_decode($modulePermission->function, true);
+        return \view('admin.user-management.index', ['title' => static::title, 'moduleFn' => $moduleFn]);
     }
     /**
      * @method datatable user management
@@ -23,6 +34,9 @@ class UserManagementController extends Controller
      */
     public function list(Request $request)
     {
+        $modulePermission = $this->modulePermission();
+        $moduleFn = \json_decode($modulePermission->function, true);
+
         $draw = $request['draw'];
         $offset = $request['start'] ? $request['start'] : 0;
         $limit = $request['length'] ? $request['length'] : 15;
@@ -56,13 +70,23 @@ class UserManagementController extends Controller
             } else {
                 $check = '';
             }
-            $data['cbox'] = '<input type="checkbox" class="data-menu-cbox" value="' . $value->id . '">';
+            $data['cbox'] = '';
+            if (in_array("delete", $moduleFn)) {
+                $data['cbox'] = '<input type="checkbox" class="data-menu-cbox" value="' . $value->id . '">';
+            }
             $data['rnum'] = $i;
             $data['name'] = $value->name;
             $data['email'] = $value->email;
             $data['roles'] = $value->userRole->name;
             $data['active'] = '<input class="activeuser" type="checkbox" data-toggle="' . \base64_encode($value->id) . '" id="cbx-is-active" ' . $check . '>';
-            $data['action'] = '<a href=' . \route('user_management.edit', $value->email) . ' class="btn btn-sm btn-primary mr-1 btn-edit" data-edit="' . \base64_encode($value->id) . '"><i class="bi bi-pencil-square"></i></a><a href=' . route('user_management.change_password', $value->email) . ' class="btn btn-sm btn-success btn-change-password" data-change="' . \base64_encode($value->id) . '"><i class="bi bi-key"></i></a>';
+            $data['action'] = '';
+            if (in_array('change_password', $moduleFn) && in_array('edit', $moduleFn)) {
+                $data['action'] = '<a href=' . \route('user_management.edit', $value->email) . ' class="btn btn-sm btn-primary mr-1 btn-edit" data-edit="' . \base64_encode($value->id) . '"><i class="bi bi-pencil-square"></i></a><a href=' . route('user_management.change_password', $value->email) . ' class="btn btn-sm btn-success btn-change-password" data-change="' . \base64_encode($value->id) . '"><i class="bi bi-key"></i></a>';
+            } elseif (in_array('change_password', $moduleFn)) {
+                $data['action'] = '<a href=' . route('user_management.change_password', $value->email) . ' class="btn btn-sm btn-success btn-change-password" data-change="' . \base64_encode($value->id) . '"><i class="bi bi-key"></i></a>';
+            } elseif (in_array('edit', $moduleFn)) {
+                $data['action'] = '<a href=' . \route('user_management.edit', $value->email) . ' class="btn btn-sm btn-primary mr-1 btn-edit" data-edit="' . \base64_encode($value->id) . '"><i class="bi bi-pencil-square"></i></a>';
+            }
             $arr[] = $data;
             $i++;
         }
@@ -80,6 +104,11 @@ class UserManagementController extends Controller
      */
     public function add()
     {
+        $modulePermission = $this->modulePermission();
+        $moduleFn = \json_decode($modulePermission->function, true);
+        if (!in_array('add', $moduleFn)) {
+            \abort('403');
+        }
         return \view('admin.user-management.add', ['title' => static::title . '-Register']);
     }
     /**
@@ -129,6 +158,11 @@ class UserManagementController extends Controller
      */
     public function changePassword($email)
     {
+        $modulePermission = $this->modulePermission();
+        $moduleFn = \json_decode($modulePermission->function, true);
+        if (!in_array('change_password', $moduleFn)) {
+            \abort('403');
+        }
         return \view('admin.user-management.change-password', ['email' => $email, 'title' => static::title . '-change password']);
     }
     /**
@@ -153,6 +187,11 @@ class UserManagementController extends Controller
      */
     public function edit($email)
     {
+        $modulePermission = $this->modulePermission();
+        $moduleFn = \json_decode($modulePermission->function, true);
+        if (!in_array('edit', $moduleFn)) {
+            \abort('403');
+        }
         return \view('admin.user-management.edit', ['title' => static::title . '-edit', 'email' => $email]);
     }
     /**
