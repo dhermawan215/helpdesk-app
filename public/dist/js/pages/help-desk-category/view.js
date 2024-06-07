@@ -63,10 +63,17 @@ var Index = (function () {
             e.preventDefault();
             table.ajax.reload();
         });
+        //add permission condition if true or false
         if ($.inArray("add", ModuleFn) !== -1) {
-            $("#btn-add").removeClass("disabled");
+            $("#btn-add").removeAttr("disabled");
         } else {
-            $("#btn-add").addClass("disabled");
+            $("#btn-add").attr("disabled", "disabled");
+        }
+        //delete permission condition if true or false
+        if ($.inArray("delete", ModuleFn) !== -1) {
+            $("#btn-delete").removeClass("disabled");
+        } else {
+            $("#btn-delete").addClass("disabled");
         }
     };
     //push data to variable aSelected
