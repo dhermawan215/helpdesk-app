@@ -31,7 +31,7 @@ class UserGroupController extends Controller
             return \abort('403');
         }
         $moduleFn = \json_decode($modulePermission->function, true);
-        return \view('admin.user-group.index', ['title' => self::title]);
+        return \view('admin.user-group.index', ['title' => self::title, 'moduleFn' => $moduleFn]);
     }
     /** 
      * @method for datatable user group
@@ -39,6 +39,9 @@ class UserGroupController extends Controller
      */
     public function list(Request $request)
     {
+        $modulePermission = $this->modulePermission();
+        $moduleFn = \json_decode($modulePermission->function, true);
+
         $draw = $request['draw'];
         $offset = $request['start'] ? $request['start'] : 0;
         $limit = $request['length'] ? $request['length'] : 15;
@@ -61,11 +64,17 @@ class UserGroupController extends Controller
         $i = $offset + 1;
         $arr = [];
         foreach ($resData as $key => $value) {
-            $data['cbox'] = '<input type="checkbox" class="data-menu-cbox" value="' . $value->id . '">';
+            $data['cbox'] = '';
+            if (in_array('delete', $moduleFn)) {
+                $data['cbox'] = '<input type="checkbox" class="data-menu-cbox" value="' . $value->id . '">';
+            }
             $data['rnum'] = $i;
             $data['name'] = $value->name;
-            $data['action'] = '<button class="btn btn-sm btn-primary btn-edit" data-edit="' . \base64_encode($value->id) . '" data-toggle="modal"
-            data-target="#modal-edit-user-group"><i class="bi bi-pencil-square"></i></button>';
+            $data['action'] = '';
+            if (in_array('edit', $moduleFn)) {
+                $data['action'] = '<button class="btn btn-sm btn-primary btn-edit" data-edit="' . \base64_encode($value->id) . '" data-toggle="modal"
+                data-target="#modal-edit-user-group"><i class="bi bi-pencil-square"></i></button>';
+            }
             $arr[] = $data;
             $i++;
         }

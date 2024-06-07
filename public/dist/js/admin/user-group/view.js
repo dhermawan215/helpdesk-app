@@ -8,6 +8,8 @@ var Index = (function () {
             responsive: true,
             autoWidth: true,
             pageLength: 15,
+            dom: "Bfrtip",
+            buttons: ["copy", "csv", "excel", "pdf", "print"],
             searching: true,
             paging: true,
             lengthMenu: [
@@ -58,6 +60,18 @@ var Index = (function () {
         $("#btn-refresh").click(function (e) {
             table.ajax.reload();
         });
+        //add permission condition if true or false
+        if ($.inArray("add", ModuleFn) !== -1) {
+            $("#btn-add").removeAttr("disabled");
+        } else {
+            $("#btn-add").attr("disabled", "disabled");
+        }
+        //delete permission condition if true or false
+        if ($.inArray("delete", ModuleFn) !== -1) {
+            $("#btn-delete").removeClass("disabled");
+        } else {
+            $("#btn-delete").addClass("disabled");
+        }
     };
 
     var handleAddDeleteAselected = function (value, parentElement) {
