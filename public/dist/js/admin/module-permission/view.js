@@ -60,6 +60,18 @@ var Index = (function () {
         $("#btn-refresh").click(function (e) {
             table.ajax.reload();
         });
+        //add permission condition if true or false
+        if ($.inArray("add", ModuleFn) !== -1) {
+            $("#btn-add").removeClass("disabled");
+        } else {
+            $("#btn-add").addClass("disabled");
+        }
+        //delete permission condition if true or false
+        if ($.inArray("delete", ModuleFn) !== -1) {
+            $("#btn-delete").removeClass("disabled");
+        } else {
+            $("#btn-delete").addClass("disabled");
+        }
     };
 
     var handleAddDeleteAselected = function (value, parentElement) {
