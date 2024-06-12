@@ -5,12 +5,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">User Group Management</h1>
+                    <h1 class="m-0">Department Management</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">User Group</li>
+                        <li class="breadcrumb-item active">Department</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -28,15 +28,15 @@
                         <div class="card-header">
                             <button type="button" class="btn btn-sm btn-info" id="btn-refresh"><i
                                     class="bi bi-arrow-clockwise"></i> Refresh</button>
-                            <button type="button" class="btn btn-sm btn-primary" id="btn-add" data-toggle="modal"
-                                data-target="#modal-add-user-group"><i class="fa fa-plus" aria-hidden="true"></i> Add
+                            <button type="button" id="btn-add" class="btn btn-sm btn-primary" data-toggle="modal"
+                                data-target="#modal-add-department"><i class="fa fa-plus" aria-hidden="true"></i> Add
                                 Data</button>
                             <button type="button" id="btn-delete" class="btn btn-sm btn-danger"><i class="fa fa-trash"
                                     aria-hidden="true"></i>
                                 Delete</button>
                         </div>
                         <div class="card-body">
-                            <table id="table-user-group" class="table table-bordered table-hover" style="width: 100%">
+                            <table id="table-department" class="table table-bordered table-hover" style="width: 100%">
                                 <thead class="bg-primary">
                                     <tr>
                                         <th style="width: 15px">#</th>
@@ -48,7 +48,6 @@
                                 <tbody>
 
                                 </tbody>
-
                             </table>
                         </div>
                     </div>
@@ -59,23 +58,23 @@
     </section>
     <!-- /.content -->
 
-    <!-- modal add user-group -->
-    <div class="modal fade" id="modal-add-user-group">
+    <!-- modal help desk category -->
+    <div class="modal fade" id="modal-add-department">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Modal Add User Group</h4>
+                    <h4 class="modal-title">Modal add department</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="javascript:;" id="form-add-user-group" method="post">
+                <form action="javascript:;" id="form-add-department" method="post">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" name="name" id="name" class="form-control"
-                                placeholder="group name">
+                            <label for="category-name">Department Name</label>
+                            <input type="text" name="department_name" id="department-name" class="form-control"
+                                placeholder="department name">
                         </div>
                     </div>
                     <div class="modal-footer justify-content-between">
@@ -88,29 +87,30 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-    <!-- /modal add user-group  -->
-    <!-- modal edit user-group -->
-    <div class="modal fade" id="modal-edit-user-group">
+    <!-- /modal add help desk category  -->
+
+    <!-- modal edit help desk category -->
+    <div class="modal fade" id="modal-edit-department">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Modal Edit User Group</h4>
+                    <h4 class="modal-title">Modal edit department</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="javascript:;" id="form-edit-user-group" method="post">
+                <form action="javascript:;" id="form-edit-department" method="post">
                     @csrf
                     @method('PATCH')
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" name="name" id="name-edit" class="form-control"
-                                placeholder="group name">
+                            <label for="category-name">Department Name</label>
+                            <input type="text" name="department_name" id="edit-department-name" class="form-control"
+                                placeholder="department name">
                         </div>
                     </div>
                     <div class="modal-footer justify-content-between">
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-success" id="btn-update">Update</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </form>
@@ -119,7 +119,7 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-    <!-- /modal add user-group  -->
+    <!-- /modal edit help desk category  -->
 @endsection
 @push('js-custom')
     <script src="{{ asset('theme/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
@@ -133,5 +133,5 @@
     <script>
         ModuleFn = @json($moduleFn)
     </script>
-    <script src="{{ asset('dist/js/admin/user-group/view.min.js?q=') . time() }}"></script>
+    <script src="{{ asset('dist/js/pages/department/view.min.js?q=') . time() }}"></script>
 @endpush

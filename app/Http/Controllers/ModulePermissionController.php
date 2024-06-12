@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SysModuleMenu;
+use App\Helper\SysMenu;
 use App\Models\SysUserGroup;
-use App\Models\SysUserModuleRole;
 use Illuminate\Http\Request;
+use App\Models\SysModuleMenu;
+use App\Models\SysUserModuleRole;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,9 +21,19 @@ class ModulePermissionController extends Controller
         self::$url = \route('module_permission');
     }
 
+    private function modulePermission()
+    {
+        return SysMenu::menuSetingPermission(static::sysModuleName);
+    }
+
     public function index()
     {
-        return \view('admin.module-permission.index', ['title' => static::title]);
+        $modulePermission = $this->modulePermission();
+        if (!isset($modulePermission->is_access)) {
+            return \abort('403');
+        }
+        $moduleFn = \json_decode($modulePermission->function, true);
+        return \view('admin.module-permission.index', ['title' => static::title, 'moduleFn' => $moduleFn]);
     }
     /**
      * @method for list datatable admin module permission
@@ -30,6 +41,9 @@ class ModulePermissionController extends Controller
      */
     public function list(Request $request)
     {
+        $modulePermission = $this->modulePermission();
+        $moduleFn = \json_decode($modulePermission->function, true);
+
         $draw = $request['draw'];
         $offset = $request['start'] ? $request['start'] : 0;
         $limit = $request['length'] ? $request['length'] : 15;
@@ -54,14 +68,26 @@ class ModulePermissionController extends Controller
         $i = $offset + 1;
         $arr = [];
         foreach ($resData as $key => $value) {
-            $data['cbox'] = '<input type="checkbox" class="data-menu-cbox" value="' . $value->id . '">';
+            $data['cbox'] = '';
+            if (in_array('delete', $moduleFn)) {
+                $data['cbox'] = '<input type="checkbox" class="data-menu-cbox" value="' . $value->id . '">';
+            }
             $data['rnum'] = $i;
             $data['name'] = $value->name;
             $data['route'] = $value->route_name;
             $data['link'] = $value->link_path;
-            $data['action'] = '<a href="' . \route('module_permission.module_roles', \base64_encode($value->id)) . '" class="btn btn-sm btn-success" title="Set Module Role"><i class="fa fa-cogs" aria-hidden="true"></i></a>
-            <a href="' . \route('module_permission.edit', \base64_encode($value->id)) . '" class="btn btn-sm btn-primary" title="Edit Module Role"><i class="fa fa-edit" aria-hidden="true"></i></a>
-            <a href="' . \route('module_permission.module_roles_show', \base64_encode($value->id)) . '" class="btn btn-sm btn-outline-primary" title="Show Module Role&Permission"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
+            $data['action'] = '';
+            if (in_array('edit', $moduleFn) && in_array('module_roles', $moduleFn) && in_array('module_roles_show', $moduleFn)) {
+                $data['action'] = '<a href="' . \route('module_permission.module_roles', \base64_encode($value->id)) . '" class="btn btn-sm btn-success" title="Set Module Role"><i class="fa fa-cogs" aria-hidden="true"></i></a>
+                <a href="' . \route('module_permission.edit', \base64_encode($value->id)) . '" class="btn btn-sm btn-primary" title="Edit Module Role"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                <a href="' . \route('module_permission.module_roles_show', \base64_encode($value->id)) . '" class="btn btn-sm btn-outline-primary" title="Show Module Role&Permission"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
+            } elseif (in_array('edit', $moduleFn)) {
+                $data['action'] = '<a href="' . \route('module_permission.edit', \base64_encode($value->id)) . '" class="btn btn-sm btn-primary" title="Edit Module Role"><i class="fa fa-edit" aria-hidden="true"></i></a>';
+            } elseif (in_array('module_roles', $moduleFn)) {
+                $data['action'] = '<a href="' . \route('module_permission.module_roles', \base64_encode($value->id)) . '" class="btn btn-sm btn-success" title="Set Module Role"><i class="fa fa-cogs" aria-hidden="true"></i></a>';
+            } elseif (in_array('module_roles_show', $moduleFn)) {
+                $data['action'] = '<a href="' . \route('module_permission.module_roles_show', \base64_encode($value->id)) . '" class="btn btn-sm btn-outline-primary" title="Show Module Role&Permission"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
+            }
             $arr[] = $data;
             $i++;
         }
@@ -79,6 +105,11 @@ class ModulePermissionController extends Controller
      */
     public function add()
     {
+        $modulePermission = $this->modulePermission();
+        $moduleFn = \json_decode($modulePermission->function, true);
+        if (!in_array('add', $moduleFn)) {
+            \abort('403');
+        }
         return \view('admin.module-permission.create', ['title' => self::title . ' - Add Module']);
     }
     /**
@@ -119,6 +150,11 @@ class ModulePermissionController extends Controller
      */
     public function edit($id)
     {
+        $modulePermission = $this->modulePermission();
+        $moduleFn = \json_decode($modulePermission->function, true);
+        if (!in_array('edit', $moduleFn)) {
+            \abort('403');
+        }
         $data = SysModuleMenu::find(base64_decode($id));
         return \view('admin.module-permission.edit', [
             'title' => self::title . ' - Edit Module',
@@ -166,6 +202,11 @@ class ModulePermissionController extends Controller
      */
     public function moduleRole($id)
     {
+        $modulePermission = $this->modulePermission();
+        $moduleFn = \json_decode($modulePermission->function, true);
+        if (!in_array('module_roles', $moduleFn)) {
+            \abort('403');
+        }
         $moduleData = SysModuleMenu::select('id', 'description')->where('id', \base64_decode($id))->first();
         $userGroupData = SysUserGroup::select('id', 'name')->get();
         return \view('admin.module-permission.module-role', [
@@ -209,6 +250,11 @@ class ModulePermissionController extends Controller
      */
     public function moduleRoleShow($id)
     {
+        $modulePermission = $this->modulePermission();
+        $moduleFn = \json_decode($modulePermission->function, true);
+        if (!in_array('module_roles_show', $moduleFn)) {
+            \abort('403');
+        }
         $moduleData = SysModuleMenu::select('id', 'description')->where('id', \base64_decode($id))->first();
         $userGroupData = SysUserGroup::select('id', 'name')->get();
         return \view('admin.module-permission.module-role-show', [

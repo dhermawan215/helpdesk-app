@@ -28,7 +28,7 @@
                         <div class="card-header">
                             <button type="button" class="btn btn-sm btn-info" id="btn-refresh"><i
                                     class="bi bi-arrow-clockwise"></i> Refresh</button>
-                            <a href="{{ route('user_management.add') }}" class="btn btn-sm btn-primary"><i
+                            <a href="{{ route('user_management.add') }}" id="btn-add" class="btn btn-sm btn-primary"><i
                                     class="fa fa-user-plus" aria-hidden="true"></i> Register User</a>
                             <button type="button" id="btn-delete" class="btn btn-sm btn-danger"><i class="fa fa-trash"
                                     aria-hidden="true"></i>
@@ -62,5 +62,16 @@
     <!-- /.content -->
 @endsection
 @push('js-custom')
+    <script src="{{ asset('theme/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('theme/plugins/jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('theme/plugins/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('theme/plugins/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('theme/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+    <script>
+        ModuleFn = @json($moduleFn)
+    </script>
     <script src="{{ asset('dist/js/admin/user-management/view.min.js?q=') . time() }}"></script>
 @endpush

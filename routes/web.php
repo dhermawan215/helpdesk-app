@@ -74,6 +74,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     //Department route
     Route::get('/department', [DepartmentController::class, 'index'])->name('department');
+    Route::post('/department/list', [DepartmentController::class, 'list']);
+    Route::post('/department/save', [DepartmentController::class, 'store']);
+    Route::patch('/department/update/{id}', [DepartmentController::class, 'update']);
+    Route::post('/department/delete', [DepartmentController::class, 'destroy']);
 
     //Help desk category
     Route::get('/help-desk-category', [HelpDeskCategoryController::class, 'index'])->name('help_desk_category');
