@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -32,10 +33,14 @@ class AuthenticatedController extends Controller
             'activity' => 'login to system',
         ];
 
+        $userData = User::select('id', 'email', 'is_active')->where('email', $request->email)->first();
+        if ($userData->is_active == 0) {
+            $data['status'] = 'false';
+            $userLogIfFails = UserLogController::recordLog($data);
+            return \response()->json(['data' => 'Please check your email, password or contact administrator!'], 401);
+        }
+
         if (Auth::attempt($request->only(['email', 'password']))) {
-            if (Auth::user()->is_active == '0') {
-                return \response()->json(['data' => 'Please check your email, password or contact administrator!'], 401);
-            }
 
             $request->session()->regenerate();
             $url = \url('/dashboard');

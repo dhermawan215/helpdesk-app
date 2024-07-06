@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helper\SysMenu;
 use Illuminate\Http\Request;
 use App\Models\HelpDeskCategory;
+use App\Models\HelpDeskSubCategory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class HelpDeskCategoryController extends Controller
@@ -32,7 +34,7 @@ class HelpDeskCategoryController extends Controller
     public function index()
     {
         $modulePermission = $this->modulePermission();
-        if (!isset($modulePermission->is_access)) {
+        if (!isset($modulePermission->is_access) || $modulePermission->is_access == 0) {
             return \abort('403');
         }
         $moduleFn = \json_decode($modulePermission->function, true);
@@ -79,7 +81,12 @@ class HelpDeskCategoryController extends Controller
             $data['rnum'] = $i;
             $data['name'] = $value->category_name;
             $data['action'] = '';
-            if (in_array('edit', $moduleFn)) {
+            if (in_array('edit', $moduleFn) && \in_array('sub_category', $moduleFn)) {
+                $data['action'] = '<button class="btn btn-sm btn-primary btn-edit" data-edit="' . \base64_encode($value->id) . '" data-toggle="modal"
+                data-target="#modal-edit-category"><i class="fa fa-edit"></i></button><a href="' . \route('help_desk_category.sub_category', \base64_encode($value->id)) . '" class="ml-1 btn btn-sm btn-success" title="sub category menu"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
+            } elseif (in_array('sub_category', $moduleFn)) {
+                $data['action'] = '<a href="' . \route('help_desk_category.sub_category', \base64_encode($value->id)) . '" class="ml-1 btn btn-sm btn-success" title="sub category menu"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
+            } elseif (in_array('edit', $moduleFn)) {
                 $data['action'] = '<button class="btn btn-sm btn-primary btn-edit" data-edit="' . \base64_encode($value->id) . '" data-toggle="modal"
                 data-target="#modal-edit-category"><i class="fa fa-edit"></i></button>';
             }
@@ -107,9 +114,10 @@ class HelpDeskCategoryController extends Controller
         if ($validator->fails()) {
             return \response()->json($validator->errors(), 403);
         }
-
+        $user = Auth::user();
         HelpDeskCategory::create([
-            'category_name' => $request->category_name
+            'category_name' => $request->category_name,
+            'created_by' => $user->name,
         ]);
 
         return \response()->json(['success' => true, 'message' => 'Data saved'], 200);
@@ -138,13 +146,14 @@ class HelpDeskCategoryController extends Controller
         return \response()->json(['success' => true, 'message' => 'Update success'], 200);
     }
     /**
-     * @method handle delete data
+     * @method handle delete data category and sub category
      * @param multiple/single id
      * @return json
      */
     public function destroy(Request $request)
     {
         HelpDeskCategory::whereIn('id', $request->dValue)->delete();
+        HelpDeskSubCategory::whereIn('category_id', $request->dValue)->delete();
         return \response()->json(['success' => true, 'message' => 'Delete success'], 200);
     }
 }

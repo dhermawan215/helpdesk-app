@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthenticatedController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HelpDeskCategoryController;
+use App\Http\Controllers\HelpDeskSubCategoryController;
 use App\Http\Controllers\ModulePermissionController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserManagementController;
@@ -85,4 +86,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/help-desk-category/save', [HelpDeskCategoryController::class, 'store']);
     Route::patch('/help-desk-category/update/{id}', [HelpDeskCategoryController::class, 'update']);
     Route::post('/help-desk-category/delete', [HelpDeskCategoryController::class, 'destroy']);
+    //Help desk sub category
+    Route::get('/help-desk-category/help-desk-sub-category/{id}', [HelpDeskSubCategoryController::class, 'index'])->name('help_desk_category.sub_category');
+    Route::post('/help-desk-category/help-desk-sub-category/list', [HelpDeskSubCategoryController::class, 'listOfSubCategroy']);
+    Route::post('/help-desk-category/help-desk-sub-category/save', [HelpDeskSubCategoryController::class, 'storeSubCategory']);
+    Route::post('/help-desk-category/help-desk-sub-category/update', [HelpDeskSubCategoryController::class, 'updateSubCategory']);
+    Route::post('/help-desk-category/help-desk-sub-category/delete', [HelpDeskSubCategoryController::class, 'destroySubCategory']);
 });

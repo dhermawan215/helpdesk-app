@@ -22,7 +22,7 @@ class UserManagementController extends Controller
     public function index()
     {
         $modulePermission = $this->modulePermission();
-        if (!isset($modulePermission->is_access)) {
+        if (!isset($modulePermission->is_access) || $modulePermission->is_access == 0) {
             return \abort('403');
         }
         $moduleFn = \json_decode($modulePermission->function, true);
